@@ -99,23 +99,23 @@
                 regex: "\\t"
             },
             {
-                pattern: /^cr|carrigeReturn$/i,
+                pattern: /^(?:cr|carrigeReturn)$/i,
                 regex: "\\r"
             },
             {
-                pattern: /^lf|lineFeed$/i,
+                pattern: /^(?:lf|lineFeed)$/i,
                 regex: "\\n"
             },
             {
-                pattern: /^vt|verticalTab$/i,
+                pattern: /^(?:vt|verticalTab)$/i,
                 regex: "\\v"
             },
             {
-                pattern: /^ff|formFeed$/i,
+                pattern: /^(?:ff|formFeed)$/i,
                 regex: "\\f"
             },
             {
-                pattern: /^bs|backspace$/i,
+                pattern: /^(?:bs|backspace)$/i,
                 regex: "\\b"
             }
         ];
@@ -185,7 +185,7 @@
                 }
             },
             {
-                pattern: /^option(?:al)?|maybe$/i,
+                pattern: /^(?:option(?:al)?|maybe)$/i,
                 action: function(json, captureObject) {
                     return "(?:" + build(json, captureObject) + ")?";
                 }
@@ -207,7 +207,7 @@
                 }
             },
             {
-                pattern: /^option(?:al)?|maybeNotGreedy$/i,
+                pattern: /^(?:option(?:al)?|maybe)NotGreedy$/i,
                 action: function(json, captureObject) {
                     return "(?:" + build(json, captureObject) + ")??";
                 }
@@ -217,7 +217,7 @@
                 action: generateFromTo("?")
             },
             {
-                pattern: /^or|alter(?:nate|nation)?$/i,
+                pattern: /^(?:or|alter(?:nate|nation)?)$/i,
                 action: function(json, captureObject) {
                     var i, result = "";
                     for(i = 0; i < json.length; i++) {
@@ -255,7 +255,7 @@
                 }
             },
             {
-                pattern: /^raw$/i,
+                pattern: /^(?:raw|regexp?)$/i,
                 action: function(json, captureObject) {
 	                var matcher;
 	                if(typeof json !== "string") {
@@ -279,13 +279,13 @@
                 }
             },
             {
-                pattern: /^complement(?:char(?:acter)?)?Set$/i,
+                pattern: /^complement(?:ary)?(?:char(?:acter)?)?Set$/i,
                 action: function(json, captureObject) {
                     return "[^" + characterSetNotation(json) + "]";
                 }
             },
             {
-                pattern: /^anchor|bound$/i,
+                pattern: /^(?:anchor|bound)$/i,
                 action: function(json, captureObject) {
                     if(typeof json !== "string") {
                         throw new Error("invalid anchor");
