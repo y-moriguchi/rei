@@ -8,7 +8,7 @@
  */
 (function(root) {
     var undef = void 0,
-        Rei;
+        Re;
     function isArray(anObject) {
         return Object.prototype.toString.call(anObject) === '[object Array]';
     }
