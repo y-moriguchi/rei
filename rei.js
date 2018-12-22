@@ -2450,8 +2450,8 @@
                         "\\uA000-\\uA48C\\uA490-\\uA4C6"
                 }
             ];
-            if(userProperties) {
-                categories = categories.concat(userProperties);
+            if(opts.userProperties) {
+                categories = categories.concat(opts.userProperties);
             }
             function scanCategories(name) {
                 var i;
@@ -2563,8 +2563,8 @@
                     charset: "\\b"
                 }
             ];
-            if(userSet) {
-                definedSet = definedSet.concat(userSet);
+            if(opts.userSet) {
+                definedSet = definedSet.concat(opts.userSet);
             }
             function scanNotation(json) {
                 var element = getOneAndOnlyField(json),
@@ -2924,13 +2924,11 @@
                 return execResult;
             }
             regex = convert(regexOrJson);
-            if(regex.capture.captures !== undef) {
-                regex.regex.execWithName = function(aString) {
-                    var groupResult = {};
-                    copyToGroup(groupResult, regex, regex.regex.exec(aString));
-                    return groupResult.group;
-                };
-            }
+            regex.regex.execWithName = function(aString) {
+                var groupResult = {};
+                copyToGroup(groupResult, regex, regex.regex.exec(aString));
+                return groupResult.group;
+            };
             regex.regex.matcher = function(aString, option) {
                 var pattern = regex,
                     opt = option ? option : {},
@@ -2939,7 +2937,7 @@
                     find: function() {
                         var previousIndex = pattern.regex.lastIndex,
                             result = pattern.regex.exec(aString);
-                        if(!result && opt.preserve) {
+                        if(!result) {
                             pattern.regex.lastIndex = previousIndex;
                         }
                         return copyToGroup(me, pattern, result);
@@ -2983,7 +2981,8 @@
         return expandRegExp;
     }
     Re = {
-        i: createModule()
+        i: createModule(),
+        plugin: createModule
     };
     if(typeof module !== "undefined" && module.exports) {
         module.exports = Re;

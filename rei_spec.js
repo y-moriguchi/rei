@@ -576,4 +576,123 @@ describe("Rei", function () {
             nomatch(" ", { "charset": "backspace" });
         });
     });
+    describe("testing matching methods", function () {
+        it("execWithName", function () {
+            var json1 = [
+                "<",
+                {
+                    "capture": {
+                        "name": "tagname",
+                        "pattern": {
+                            "oneOrMoreNonGreedy": { "seq": "exceptNewLine" }
+                        }
+                    }
+                },
+                ">"
+            ];
+            expect(Re.i(json1).execWithName("<aaaaa><bbb>")[1]).toBe("aaaaa");
+            expect(Re.i(json1).execWithName("<aaaaa><bbb>").tagname).toBe("aaaaa");
+            expect(Re.i(/<(.+?)>/).execWithName("<aaaaa><bbb>")[1]).toBe("aaaaa");
+        });
+        it("find", function () {
+            var matcher1 = Re.i(/<.+?>/g).matcher("<aaaaa><bbbb>text<cccc>");
+            expect(matcher1.find()[0]).toBe("<aaaaa>");
+            matcher1.find();
+            expect(matcher1.group[0]).toBe("<bbbb>");
+            expect(matcher1.find()[0]).toBe("<cccc>");
+            expect(matcher1.find()).toBeNull();
+        });
+        it("lookingAt", function () {
+            var matcher1 = Re.i(/<.+?>/g).matcher("<aaaaa><bbbb>text<cccc>");
+            expect(matcher1.lookingAt()[0]).toBe("<aaaaa>");
+            matcher1.lookingAt();
+            expect(matcher1.group[0]).toBe("<bbbb>");
+            expect(matcher1.lookingAt()).toBeNull();
+        });
+        it("matches", function () {
+            var matcher1 = Re.i(/<.+>/g).matcher("<aaaaa><bbbb>text<cccc>");
+            expect(matcher1.matches()[0]).toBe("<aaaaa><bbbb>text<cccc>");
+            var matcher2 = Re.i(/<.+>/g).matcher("<aaaaa><bbbb>text<cccc>");
+            matcher2.matches();
+            expect(matcher2.group[0]).toBe("<aaaaa><bbbb>text<cccc>");
+            var matcher3 = Re.i(/<.+?>/g).matcher("<aaaaa><bbbb>text<cccc>");
+            expect(matcher3.matches()).toBeNull();
+        });
+        it("usePattern", function () {
+            function match(matcher) {
+                var count = 0;
+                while(!matcher.usePattern(/$/g).lookingAt()) {
+                    if(matcher.usePattern(/\((?!\?[:=!])/g).lookingAt()) {
+                        count++;
+                    } else if(matcher.usePattern(/\[([^\]\\]|\\[\s\S])*\]/g).lookingAt()) {
+                    } else if(matcher.usePattern(/\\[\s\S]|[\s\S]/g).lookingAt()) {
+                    }
+                }
+                return count;
+            }
+            expect(match(Re.i(/$/g).matcher("(.)(?:.)\\(\\)[()][\(\)](?=[0-9]{3,3})(?!961)"))).toBe(1);
+        });
+    });
+    describe("testing plug-in", function () {
+        it("notation", function () {
+            var plugin1 = Re.plugin({
+                userNotation: [
+                    {
+                        pattern: /^(?:test1)$/i,
+                        action: function(json) {
+                            return "(?:" + this.build(json) + ")+";
+                        }
+                    }
+                ]
+            });
+            var json1 = {
+                "test1": {
+                    "capture": {
+                        "name": "name",
+                        "pattern": {
+                            "seq": "all"
+                        }
+                    }
+                }
+            };
+            expect(plugin1(json1).exec("abc")[0]).toBe("abc");
+            expect(plugin1(json1).exec("abc")[1]).toBe("c");
+        });
+        it("sequence", function () {
+            var plugin1 = Re.plugin({
+                userSequence: [
+                    {
+                        pattern: /^(?:test1)$/i,
+                        regex: "[\\w]"
+                    }
+                ]
+            });
+            expect(plugin1({ "seq": "test1" }).test("a")).toBeTruthy();
+            expect(plugin1({ "seq": "test1" }).test("!")).toBeFalsy();
+        });
+        it("set", function () {
+            var plugin1 = Re.plugin({
+                userSet: [
+                    {
+                        pattern: /^(?:test1)$/i,
+                        charset: "a-z"
+                    }
+                ]
+            });
+            expect(plugin1({ "charset": "test1" }).test("a")).toBeTruthy();
+            expect(plugin1({ "charset": "test1" }).test("!")).toBeFalsy();
+        });
+        it("Unicode property", function () {
+            var plugin1 = Re.plugin({
+                userProperties: [
+                    {
+                        pattern: /^(?:test1)$/i,
+                        charset: "a-z"
+                    }
+                ]
+            });
+            expect(plugin1({ "Unicode": "test1" }).test("a")).toBeTruthy();
+            expect(plugin1({ "Unicode": "test1" }).test("!")).toBeFalsy();
+        });
+    });
 });
