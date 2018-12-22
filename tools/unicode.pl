@@ -435,3 +435,138 @@ foreach my $category (@categories) {
         print $output;
     }
 }
+
+open(FH, '>', "rei_spec_unicode.js") or die $!;
+print FH << "EOF";
+/**
+ * Morilib Rei
+ *
+ * Copyright (c) 2018 Yuichiro MORIGUCHI
+ *
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ **/
+/*
+ * This test case describe by Jasmine.
+ */
+describe("Rei", function () {
+    function match(aString, json) {
+        expect(Re.i(json).test(aString)).toBe(true);
+    }
+
+    function nomatch(aString, json) {
+        expect(Re.i(json).test(aString)).toBe(false);
+    }
+
+    function matchPart(aString, part, json) {
+        expect(Re.i(json).exec(aString)[0]).toBe(part);
+    }
+
+    function toThrow(json) {
+        expect(function() { Re.i(json); }).toThrow();
+    }
+
+    beforeEach(function () {
+    });
+
+    describe("testing unicode", function () {
+EOF
+
+foreach my $category (@categories) {
+    my $count, $regex, $inCode, $outCode, $category0, $category1, $category0r, $category1r, $output;
+    sub generateSub {
+        $output .= sprintf("            match(\"\\u%04X\", { \"unicode\": \"%s\" });\n", $inCode, $_[0]);
+        $output .= sprintf("            nomatch(\"\\u%04X\", { \"unicode\": \"%s\" });\n", $outCode, $_[0]);
+        $output .= sprintf("            match(\"\\u%04X\", { \"unicode\": \"%s\" });\n", $inCode, "Is" . $_[0]);
+        $output .= sprintf("            nomatch(\"\\u%04X\", { \"unicode\": \"%s\" });\n", $outCode, "Is" . $_[0]);
+        $output .= sprintf("            match(\"\\u%04X\", { \"unicode\": \"%s\" });\n", $inCode, "Is_" . $_[0]);
+        $output .= sprintf("            nomatch(\"\\u%04X\", { \"unicode\": \"%s\" });\n", $outCode, "Is_" . $_[0]);
+    }
+    sub generateSeparator {
+        my @splited;
+        @splited = split(/[\-_]/, $_[0]);
+        if($splited[0] =~ /@/) {
+            $splited[0] =~ s/@/_/;
+            generateSub(join("_", @splited));
+            generateSub(join("-", @splited));
+            generateSub(join("", @splited));
+            generateSub(join("  ", @splited));
+            @splited = split(/[\-_]/, $_[0]);
+            $splited[0] =~ s/@//;
+            generateSub(join("_", @splited));
+            generateSub(join("-", @splited));
+            generateSub(join("", @splited));
+            generateSub(join("  ", @splited));
+        } else {
+            generateSub(join("_", @splited));
+            generateSub(join("-", @splited));
+            generateSub(join("", @splited));
+            generateSub(join("  ", @splited));
+        }
+    }
+    $beginCode = -1;
+    $category0 = $category->[0];
+    $category1 = $category->[1];
+    $output = "";
+    $output .= "        it(\"$category0\", function() {\n";
+    $inCode = -1;
+    for($count = 0; $count <= 0xffff; $count++) {
+        my $aCharacter;
+        $aCharacter = chr($count);
+        if($aCharacter =~ /^[\p{$category0}]$/) {
+            if($inCode < 0) {
+                $inCode = $count;
+                if($inCode > 0) {
+                    $outCode = $inCode - 1;
+                    last;
+                }
+            }
+        } elsif($inCode >= 0) {
+            $outCode = $count;
+            $inCode = $count - 1;
+            last;
+        }
+    }
+    if($inCode < 0) {
+        next;
+    } elsif($category0 =~ /^Bidi_Class:/) {
+        generateSeparator($category0);
+        generateSeparator($category1);
+    } elsif($category0 =~ /^Block:/) {
+        generateSeparator($category0);
+        $category0r = $category0;
+        $category0r =~ s/^Block:/Block:  /;
+        generateSeparator($category0r);
+        $category0r = $category0;
+        $category0r =~ s/^Block:/Blk=/;
+        generateSeparator($category0r);
+        generateSeparator($category1);
+        $category1r = $category1;
+        $category1r =~ s/^In/In@/;
+        generateSeparator($category1r);
+    } elsif($category0 =~ /^Script=/) {
+        generateSeparator($category0);
+        $category0r = $category0;
+        $category0r =~ s/^Script=/sc=/;
+        generateSeparator($category0r);
+        $category0r = $category0;
+        $category0r =~ s/^Script=/Script:/;
+        generateSeparator($category0r);
+        $category0r = $category0;
+        $category0r =~ s/^Script=/Script:  /;
+        generateSeparator($category0r);
+        generateSeparator($category1);
+    } else {
+        generateSub($category0);
+        generateSeparator($category1);
+    }
+    $output .= "        });\n";
+    print FH $output
+}
+
+print FH << "EOF";
+    });
+});
+EOF
+
+close(FH);
