@@ -2878,7 +2878,37 @@
             return build;
         }
         regexNotation = createRegexNotation(opts.userNotation);
-        function buildRegex(json) {
+        function buildFlag(flag) {
+            if(typeof flag !== "string") {
+                throw new Error("invalid flag: " + flag);
+            } else if(/^g(?:lobal)?$/i.test(flag)) {
+                return "g";
+            } else if(/^i(?:gnoreCases?)?$/i.test(flag)) {
+                return "i";
+            } else if(/^m(?:ultiline)?$/i.test(flag)) {
+                return "m";
+            } else if(/^u(?:nicode)?$/i.test(flag)) {
+                return "u";
+            } else if(/^(?:y|sticky)$/i.test(flag)) {
+                return "y";
+            } else {
+                throw new Error("invalid flag: " + flag);
+            }
+        }
+        function buildFlags(flags) {
+            var i,
+                result = "";
+            if(!flags) {
+                return "";
+            } else if(isArray(flags)) {
+                for(i = 0; i < flags.length; i++) {
+                    result += buildFlag(flags[i]);
+                }
+            } else {
+                return buildFlag(flags);
+            }
+        }
+        function buildRegex(json, flags) {
             var captureObject,
                 builtRegex;
             captureObject = {
@@ -2888,11 +2918,11 @@
             };
             builtRegex = regexNotation(json, captureObject);
             return {
-                regex: new RegExp(builtRegex),
+                regex: new RegExp(builtRegex, buildFlags(flags)),
                 capture: captureObject
             };
         }
-        function expandRegExp(regexOrJson) {
+        function expandRegExp(regexOrJson, flags) {
             var regex;
             function convert(regexOrJson) {
                 if(regexOrJson instanceof RegExp) {
@@ -2904,7 +2934,7 @@
                         }
                     };
                 } else {
-                    return buildRegex(regexOrJson);
+                    return buildRegex(regexOrJson, flags);
                 }
             }
             function copyToGroup(me, pattern, execResult) {
