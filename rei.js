@@ -3668,16 +3668,49 @@
                 return execResult;
             }
             regex = convert(regexOrJson);
+            /**
+             * @class Rei
+             * @en
+             * @param aString string to match
+             * @return matched and captured result
+             * matches the given string to this pattern.
+             * @ja
+             * @param aString マッチさせる文字列
+             * @return キャプチャされた文字列
+             * 与えらた文字列をパターンにマッチさせます。
+             */
             regex.regex.execWithName = function(aString) {
                 var groupResult = {};
                 copyToGroup(groupResult, regex, regex.regex.exec(aString));
                 return groupResult.group;
             };
+            /**
+             * @class Rei
+             * @en
+             * @param aString string to match
+             * @return a created matcher
+             * creates matcher for the given string.
+             * @ja
+             * @param aString マッチさせる文字列
+             * @return 生成されたマッチャ
+             * マッチャを生成します。
+             */
             regex.regex.matcher = function(aString, option) {
                 var pattern = regex,
                     opt = option ? option : {},
                     me;
                 me = {
+                    /**
+                     * @class Rei.matcher
+                     * @en
+                     * @return matched result
+                     * finds the next sequence of the pattern.  
+                     * The return value is the same to the return value of RegExp.exec().
+                     * @ja
+                     * @return マッチした結果
+                     * パターンにマッチするシーケンスを探します。  
+                     * 戻り値はRegExp.exec()と同じです。
+                     */
                     find: function() {
                         var previousIndex = pattern.regex.lastIndex,
                             result = pattern.regex.exec(aString);
@@ -3686,6 +3719,19 @@
                         }
                         return copyToGroup(me, pattern, result);
                     },
+                    /**
+                     * @class Rei.matcher
+                     * @en
+                     * @return matched result
+                     * matches the next sequence of the pattern from the index of last match.  
+                     * If the match is failed, the index of last match is unchanged.  
+                     * The return value is the same to the return value of RegExp.exec().
+                     * @ja
+                     * @return マッチした結果
+                     * パターンにマッチするシーケンスに最後にマッチした位置からマッチさせます。  
+                     * マッチに失敗したときのマッチの最後位置は変わりません。  
+                     * 戻り値はRegExp.exec()と同じです。
+                     */
                     lookingAt: function() {
                         var previousIndex = pattern.regex.lastIndex,
                             result = me.find();
@@ -3697,6 +3743,19 @@
                             return null;
                         }
                     },
+                    /**
+                     * @class Rei.matcher
+                     * @en
+                     * @return matched result
+                     * matches the next sequence of the pattern from the index of last match to the end of sequence.  
+                     * If the match is failed, the index of last match is unchanged.  
+                     * The return value is the same to the return value of RegExp.exec().
+                     * @ja
+                     * @return マッチした結果
+                     * パターンにマッチするシーケンスに最後にマッチした位置からシーケンスの最後までマッチします。  
+                     * マッチに失敗したときのマッチの最後位置は変わりません。  
+                     * 戻り値はRegExp.exec()と同じです。
+                     */
                     matches: function() {
                         var previousIndex = pattern.regex.lastIndex,
                             result = me.find();
@@ -3708,6 +3767,19 @@
                             return null;
                         }
                     },
+                    /**
+                     * @class Rei.matcher
+                     * @en
+                     * @param regexOrJson regular expression or Morilib Rei formed JavaScript object
+                     * @return this instance
+                     * change matching pattern to the given pattern.  
+                     * The index of last match is not changed.
+                     * @ja
+                     * @param regexOrJson RegExpオブジェクトまたはMorilib Reiで解釈できるJavaScriptオブジェクト
+                     * @return このインスタンス
+                     * マッチに使用するパターンを与えられたものに切り替えます。  
+                     * マッチの最後位置は変わりません。
+                     */
                     usePattern: function(regexOrJson) {
                         var previousIndex = pattern.regex.lastIndex;
                         pattern = convert(regexOrJson);
@@ -3726,6 +3798,7 @@
     }
     Re = {
         i: createModule(),
+        build: createModule(),
         plugin: createModule
     };
     if(typeof module !== "undefined" && module.exports) {
