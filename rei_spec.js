@@ -550,10 +550,10 @@ describe("Rei", function () {
             match("\t", { "charset": "tab" });
             nomatch(" ", { "charset": "tab" });
         });
-        it("carrigeReturn", function () {
-            match("\r", { "charset": "carrigeReturn" });
+        it("carriageReturn", function () {
+            match("\r", { "charset": "carriageReturn" });
             match("\r", { "charset": "cr" });
-            nomatch(" ", { "charset": "carrigeReturn" });
+            nomatch(" ", { "charset": "carriageReturn" });
         });
         it("lineFeed", function () {
             match("\n", { "charset": "lineFeed" });

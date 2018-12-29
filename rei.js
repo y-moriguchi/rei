@@ -2570,54 +2570,154 @@
             ];
             definedSet = [
                 {
+                    /**
+                     * @definedset all
+                     * @en
+                     * matches any character.
+                     * @ja
+                     * 全ての文字にマッチします。
+                     */
                     pattern: /^all$/i,
                     charset: "\\S\\s"
                 },
                 {
+                    /**
+                     * @definedset digit
+                     * @en
+                     * matches any digit.
+                     * @ja
+                     * 数字にマッチします。
+                     */
                     pattern: /^digit$/i,
                     charset: "\\d"
                 },
                 {
+                    /**
+                     * @definedset nonDigit
+                     * @alias notDigit
+                     * @en
+                     * matches any character which is not digit.
+                     * @ja
+                     * 数字でない文字にマッチします。
+                     */
                     pattern: /^no[nt]Digit$/i,
                     charset: "\\D"
                 },
                 {
+                    /**
+                     * @definedset word
+                     * @en
+                     * matches any word.
+                     * @ja
+                     * 単語を構成する文字にマッチします。
+                     */
                     pattern: /^word$/i,
                     charset: "\\w"
                 },
                 {
+                    /**
+                     * @definedset nonWord
+                     * @alias notWord
+                     * @en
+                     * matches any character which is not word.
+                     * @ja
+                     * 単語を構成しない文字にマッチします。
+                     */
                     pattern: /^no[nt]Word$/i,
                     charset: "\\W"
                 },
                 {
+                    /**
+                     * @definedset space
+                     * @alias whitespace
+                     * @en
+                     * matches any whitespace.
+                     * @ja
+                     * 空白文字にマッチします。
+                     */
                     pattern: /^(?:white)?space$/i,
                     charset: "\\s"
                 },
                 {
+                    /**
+                     * @definedset nonSpace
+                     * @alias notSpace nonWhitespace notWhitespace
+                     * @en
+                     * matches any character which is not whitespace.
+                     * @ja
+                     * 空白文字でない文字にマッチします。
+                     */
                     pattern: /^no[nt](?:white)?space$/i,
                     charset: "\\S"
                 },
                 {
+                    /**
+                     * @definedset tab
+                     * @en
+                     * matches a tab character.
+                     * @ja
+                     * タブ文字にマッチします。
+                     */
                     pattern: /^tab$/i,
                     charset: "\\t"
                 },
                 {
-                    pattern: /^(?:cr|carrigeReturn)$/i,
+                    /**
+                     * @definedset carriageReturn
+                     * @alias cr
+                     * @en
+                     * matches a carriage return.
+                     * @ja
+                     * CR文字にマッチします。
+                     */
+                    pattern: /^(?:cr|carriageReturn)$/i,
                     charset: "\\r"
                 },
                 {
+                    /**
+                     * @definedset lineFeed
+                     * @alias lf
+                     * @en
+                     * matches a line feed.
+                     * @ja
+                     * 行送り文字にマッチします。
+                     */
                     pattern: /^(?:lf|lineFeed)$/i,
                     charset: "\\n"
                 },
                 {
+                    /**
+                     * @definedset verticalTab
+                     * @alias vt
+                     * @en
+                     * matches a vertical tab.
+                     * @ja
+                     * 垂直タブ文字にマッチします。
+                     */
                     pattern: /^(?:vt|verticalTab)$/i,
                     charset: "\\v"
                 },
                 {
+                    /**
+                     * @definedset formFeed
+                     * @alias ff
+                     * @en
+                     * matches a form feed.
+                     * @ja
+                     * form feed文字にマッチします。
+                     */
                     pattern: /^(?:ff|formFeed)$/i,
                     charset: "\\f"
                 },
                 {
+                    /**
+                     * @definedset backspace
+                     * @alias bs
+                     * @en
+                     * matches a backspace.
+                     * @ja
+                     * バックスペース文字にマッチします。
+                     */
                     pattern: /^(?:bs|backspace)$/i,
                     charset: "\\b"
                 }
@@ -2685,7 +2785,7 @@
                     /**
                      * @sequence all
                      * @en
-                     * matches all characters.
+                     * matches any character.
                      * @ja
                      * 全ての文字にマッチします。
                      */
