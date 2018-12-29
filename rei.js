@@ -2484,6 +2484,29 @@
                 definedSet;
             notation = [
                 {
+                    /**
+                     * @setnotation range
+                     * ```format
+                     * {
+                     *   "range": {
+                     *     "from": <charcter>
+                     *     "to": <charcter>
+                     *   }
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "range": {
+                     *     "from": "a",
+                     *     "to": "z"
+                     *   }
+                     * }
+                     * ```
+                     * @en
+                     * matches a character between "from" property to "to" property.
+                     * @ja
+                     * 与えられた"from"プロパティから"to"プロパティに含まれる文字にマッチします。
+                     */
                     pattern: /^range$/i,
                     action: function(json) {
                         var beginChar,
@@ -2497,12 +2520,48 @@
                     }
                 },
                 {
+                    /**
+                     * @setnotation unicode
+                     * @alias unicodeProperty
+                     * ```format
+                     * {
+                     *   "unicode": <unicode property>
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "unicode": "L"
+                     * }
+                     * ```
+                     * @en
+                     * matches a character which is in the given Unicode property.
+                     * @ja
+                     * 与えられたUnicodeプロパティにある文字にマッチします。
+                     */
                     pattern: /^(?:unicode(?:Property)?)$/i,
                     action: function(json) {
                         return unicodeCategories(json);
                     }
                 },
                 {
+                    /**
+                     * @setnotation complementUnicode
+                     * @alias complementaryUnicode complementUnicodeProperty complementaryUnicodeProperty
+                     * ```format
+                     * {
+                     *   "complementUnicode": <unicode property>
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "complementUnicode": "L"
+                     * }
+                     * ```
+                     * @en
+                     * matches a character which is not in the given Unicode property.
+                     * @ja
+                     * 与えられたUnicodeプロパティにない文字にマッチします。
+                     */
                     pattern: /^(?:complement(?:ary)?Unicode(?:Property)?)$/i,
                     action: function(json) {
                         return negateCharacterSet(unicodeCategories(json));
