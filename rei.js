@@ -2623,24 +2623,63 @@
             }
             sequence = [
                 {
-                     pattern: /^(?:all)$/i,
-                     regex: "[\\s\\S]"
+                    /**
+                     * @sequence all
+                     * @en
+                     * matches all characters.
+                     * @ja
+                     * 全ての文字にマッチします。
+                     */
+                    pattern: /^(?:all)$/i,
+                    regex: "[\\s\\S]"
                 },
                 {
-                     pattern: /^(?:(?:all)?ExceptNewline)$/i,
-                     regex: "."
+                    /**
+                     * @sequence exceptNewline
+                     * @alias allExceptNewline
+                     * @en
+                     * matches all characters except newline.
+                     * @ja
+                     * 改行文字を除く全ての文字にマッチします。
+                     */
+                    pattern: /^(?:(?:all)?ExceptNewline)$/i,
+                    regex: "."
                 },
                 {
-                     pattern: /^(?:br|nl|newline)$/i,
-                     regex: "\\r\\n|\\r|\\n"
+                    /**
+                     * @sequence newline
+                     * @alias nl br
+                     * @en
+                     * matches sequence of newline. It will match like CRLF.
+                     * @ja
+                     * 改行を表すシーケンスに一致します。CRLFのようなシーケンスにもマッチします。
+                     */
+                    pattern: /^(?:br|nl|newline)$/i,
+                    regex: "\\r\\n|\\r|\\n"
                 },
                 {
-                     pattern: /^(?:(?:real|float)(?:Number)?(?:WithSign)?)$/i,
-                     regex: "[\\+\\-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][\\+\\-]?[0-9]+)?"
+                    /**
+                     * @sequence real
+                     * @alias float realNumber floatNumber realNumberWithSign floatNumberWithSign
+                     * @en
+                     * matches sequence of float numbers. Sign is considerated.
+                     * @ja
+                     * 浮動小数点数にマッチします。符号にもマッチします。
+                     */
+                    pattern: /^(?:(?:real|float)(?:Number)?(?:WithSign)?)$/i,
+                    regex: "[\\+\\-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][\\+\\-]?[0-9]+)?"
                 },
                 {
-                     pattern: /^(?:(?:real|float)(?:Number)?WithoutSign)$/i,
-                     regex: "(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][\\+\\-]?[0-9]+)?"
+                    /**
+                     * @sequence realWithoutSign
+                     * @alias floatWithoutSign realNumberWithoutSign floatNumberWithoutSign
+                     * @en
+                     * matches sequence of flaot numbers without sign.
+                     * @ja
+                     * 浮動小数点数にマッチします。符号にはマッチしません。
+                     */
+                    pattern: /^(?:(?:real|float)(?:Number)?WithoutSign)$/i,
+                    regex: "(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][\\+\\-]?[0-9]+)?"
                 }
             ];
             if(opts.userSequence) {
