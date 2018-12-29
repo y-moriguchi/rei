@@ -2648,50 +2648,293 @@
             }
             notation = [
                 {
+                    /**
+                     * @notation zeroOrMore
+                     * @alias repeatZeroOrMore
+                     * ```format
+                     * {
+                     *   "zeroOrMore": <pattern>
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "zeroOrMore": "a"
+                     * }
+                     * ```
+                     * qr[a*]
+                     * matches aaaaa for input aaaaab
+                     * matches <empty> for input b
+                     * @en
+                     * repeat given pattern zero or more times.
+                     * @ja
+                     * 与えられたパターンを0回以上繰り返します。
+                     */
                     pattern: /^(?:repeat)?ZeroOrMore$/i,
                     action: function(json, captureObject) {
                         return "(?:" + build(json, captureObject) + ")*";
                     }
                 },
                 {
+                    /**
+                     * @notation oneOrMore
+                     * @alias repeatOneOrMore
+                     * ```format
+                     * {
+                     *   "oneOrMore": <pattern>
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "oneOrMore": "a"
+                     * }
+                     * ```
+                     * qr[a+]
+                     * matches aaaaa for input aaaaab
+                     * no match for input b
+                     * @en
+                     * repeat given pattern one or more times.
+                     * @ja
+                     * 与えられたパターンを1回以上繰り返します。
+                     */
                     pattern: /^(?:repeat)?OneOrMore$/i,
                     action: function(json, captureObject) {
                         return "(?:" + build(json, captureObject) + ")+";
                     }
                 },
                 {
+                    /**
+                     * @notation maybe
+                     * @alias option optional
+                     * ```format
+                     * {
+                     *   "maybe": <pattern>
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "maybe": "a"
+                     * }
+                     * ```
+                     * qr[a?]
+                     * matches a for input aaaaab
+                     * matches <empty> for input b
+                     * @en
+                     * repeat given pattern zero times or one times
+                     * @ja
+                     * 与えられたパターンを0回または1回繰り返します。
+                     */
                     pattern: /^(?:option(?:al)?|maybe)$/i,
                     action: function(json, captureObject) {
                         return "(?:" + build(json, captureObject) + ")?";
                     }
                 },
                 {
+                    /**
+                     * @notation repeat
+                     * ```format
+                     * {
+                     *   "repeat": {
+                     *     "from": <number>,
+                     *     "to": <number>,
+                     *     "pattern": <pattern>
+                     *   }
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "repeat": {
+                     *     "from": 1,
+                     *     "to": 3,
+                     *     "pattern": "a"
+                     *   }
+                     * }
+                     * ```
+                     * qr[a{1,3}]
+                     * matches aaa for input aaaaab
+                     * matches a for input ab
+                     * @en
+                     * repeat given pattern at least "from" times and at most "to" times.  
+                     * If value "from" is not specified, "from" will be 0.  
+                     * If value "to" is not specified, "to" will be infinity.
+                     * @ja
+                     * 与えられたパターンを少なくとも"from"回、多くとも"to"回繰り返します。  
+                     * "from"が指定されなかったときは0になります。
+                     * "to"が指定されなかったときは繰り返しの上限はなくなります。
+                     */
                     pattern: /^repeat$/i,
                     action: generateFromTo("")
                 },
                 {
+                    /**
+                     * @notation zeroOrMoreNonGreedy
+                     * @alias repeatZeroOrMoreNonGreedy repeatZeroOrMoreNotGreedy zeroOrMoreNotGreedy
+                     * ```format
+                     * {
+                     *   "zeroOrMoreNonGreedy": <pattern>
+                     * }
+                     * ```
+                     * ```rei
+                     * [
+                     *   {
+                     *     "zeroOrMoreNonGreedy": {
+                     *       "charset": "exceptNewline"
+                     *     }
+                     *   },
+                     *   "-"
+                     * ]
+                     * ```
+                     * qr[.*?-]
+                     * matches aaaaa for input aaaaa-a-
+                     * @en
+                     * repeat given pattern zero or more times. This match is the smallest posible match.  
+                     * For above example aaaaa-a, matches aaaaa.  
+                     * But if you use zeroOrMore instead, it will match aaaaa-a.
+                     * @ja
+                     * 与えられたパターンを0回以上繰り返します。最小の範囲にマッチします。  
+                     * 上記の例ではaaaaa-a-はaaaaaにマッチします。
+                     * もし、zeroOrMoreを代わりに使用したときはaaaaa-aにマッチします。
+                     */
                     pattern: /^(?:repeat)?ZeroOrMoreNo[nt]Greedy$/i,
                     action: function(json, captureObject) {
                         return "(?:" + build(json, captureObject) + ")*?";
                     }
                 },
                 {
+                    /**
+                     * @notation oneOrMoreNonGreedy
+                     * @alias repeatOneOrMoreNonGreedy repeatOneOrMoreNotGreedy oneOrMoreNotGreedy
+                     * ```format
+                     * {
+                     *   "oneOrMoreNonGreedy": <pattern>
+                     * }
+                     * ```
+                     * ```rei
+                     * [
+                     *   {
+                     *     "oneOrMoreNonGreedy": {
+                     *       "charset": "exceptNewline"
+                     *     }
+                     *   },
+                     *   "-"
+                     * ]
+                     * ```
+                     * qr[.+?-]
+                     * matches aaaaa for input aaaaa-a-
+                     * @en
+                     * repeat given pattern one or more times. This match is the smallest posible match.  
+                     * For above example aaaaa,a, matches aaaaa.  
+                     * But if you use oneOrMore instead, it will match aaaaa-a.
+                     * @ja
+                     * 与えられたパターンを1回以上繰り返します。最小の範囲にマッチします。  
+                     * 上記の例ではaaaaa-a-はaaaaaにマッチします。
+                     * もし、oneOrMoreを代わりに使用したときはaaaaa-aにマッチします。
+                     */
                     pattern: /^(?:repeat)?OneOrMoreNo[nt]Greedy$/i,
                     action: function(json, captureObject) {
                         return "(?:" + build(json, captureObject) + ")+?";
                     }
                 },
                 {
+                    /**
+                     * @notation maybeNonGreedy
+                     * @alias optionalNonGreedy optionalNotGreedy optionNonGreedy optionNotGreedy maybeNotGreedy
+                     * ```format
+                     * {
+                     *   "maybeNonGreedy": <pattern>
+                     * }
+                     * ```
+                     * ```rei
+                     * [
+                     *   {
+                     *     "maybeNonGreedy": {
+                     *       "charset": "exceptNewline"
+                     *     }
+                     *   },
+                     *   "-"
+                     * ]
+                     * ```
+                     * qr[.??-]
+                     * matches <empty> for input --
+                     * @en
+                     * repeat given pattern zero times or one time. This match is the smallest posible match.  
+                     * For above example -- matches empty string.  
+                     * But if you use oneOrMore instead, it will match -.
+                     * @ja
+                     * 与えられたパターンを0回または1回繰り返します。最小の範囲にマッチします。  
+                     * 上記の例では--は空文字列にマッチします。
+                     * もし、maybeを代わりに使用したときは-にマッチします。
+                     */
                     pattern: /^(?:option(?:al)?|maybe)No[nt]Greedy$/i,
                     action: function(json, captureObject) {
                         return "(?:" + build(json, captureObject) + ")??";
                     }
                 },
                 {
+                    /**
+                     * @notation repeatNonGreedy
+                     * @alias repeatNotGreedy
+                     * ```format
+                     * {
+                     *   "repeatNonGreedy": {
+                     *     "from": <number>,
+                     *     "to": <number>,
+                     *     "pattern": <pattern>
+                     *   }
+                     * }
+                     * ```
+                     * ```rei
+                     * [
+                     *   {
+                     *     "repeat": {
+                     *       "from": 1,
+                     *       "to": 10,
+                     *       "pattern": {
+                     *         "charset": "exceptNewline"
+                     *       }
+                     *     }
+                     *   },
+                     *   "-"
+                     * ]
+                     * ```
+                     * qr[.{1,10}?-]
+                     * matches aaaaa for input aaaaa-a-
+                     * @en
+                     * repeat given pattern at least "from" times and at most "to" times. This match is the smallest posible match.  
+                     * If value "from" is not specified, "from" will be 0.  
+                     * If value "to" is not specified, "to" will be infinity.
+                     * For above example aaaaa,a, matches aaaaa.  
+                     * But if you use repeat instead, it will match aaaaa-a.
+                     * @ja
+                     * 与えられたパターンを少なくとも"from"回、多くとも"to"回繰り返します。最小の範囲にマッチします。  
+                     * "from"が指定されなかったときは0になります。
+                     * "to"が指定されなかったときは繰り返しの上限はなくなります。
+                     * 上記の例ではaaaaa-a-はaaaaaにマッチします。
+                     * もし、repeatを代わりに使用したときはaaaaa-aにマッチします。
+                     */
                     pattern: /^repeatNo[nt]Greedy$/i,
                     action: generateFromTo("?")
                 },
                 {
+                    /**
+                     * @notation or
+                     * @alias alter alternate alternation alternative
+                     * ```format
+                     * {
+                     *   "or": [ list of alternation ]
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "or": [ "765", "346", "283" ]
+                     * }
+                     * ```
+                     * qr[765|346|283]
+                     * matches 765 for input 765pro
+                     * @en
+                     * matches one of the list of alternation.
+                     * @ja
+                     * リスト内のパターンのいずれかにマッチします。
+                     */
                     pattern: /^(?:or|alter(?:nate|nation|native)?)$/i,
                     action: function(json, captureObject) {
                         var i, result = "";
@@ -2705,6 +2948,40 @@
                     }
                 },
                 {
+                    /**
+                     * @notation capture
+                     * ```format
+                     * {
+                     *   "capture": <pattern>
+                     * }
+                     * ```
+                     * ```format
+                     * {
+                     *   "capture": {
+                     *     "name": <name>
+                     *     "pattern": <pattern>
+                     *   }
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "capture": {
+                     *     "zeroOrMore": "a"
+                     *   }
+                     * }
+                     * ```
+                     * qr["(a*)"]
+                     * @en
+                     * matches the given pattern and caputures the matched result.  
+                     * If the value is an object which has the property "name", the capture is named.  
+                     * The named capture can use API of Morilib Rei.  
+                     * The named capture will be numbered as normal capturing.
+                     * @ja
+                     * 与えられたパターンにマッチし、結果を保存します。  
+                     * 値に"name"のプロパティを含むオブジェクトが与えられたときは結果に名前がつけられます。  
+                     * 名前付きキャプチャはMorilib ReiのAPIを通じて使用することができます。  
+                     * 名前付きキャプチャにも通常と同様のキャプチャ番号が採番されます。
+                     */
                     pattern: /^capture?$/i,
                     action: function(json, captureObject) {
                         var captureNo = captureObject.captures++;
@@ -2718,6 +2995,33 @@
                     }
                 },
                 {
+                    /**
+                     * @notation refer
+                     * @alias reference backreference backrefer
+                     * ```format
+                     * {
+                     *   "refer": <number or name>
+                     * }
+                     * ```
+                     * ```rei
+                     * [
+                     *   {
+                     *     "capture": {
+                     *       "charset": "exceptNewline"
+                     *     }
+                     *   },
+                     *   {
+                     *     "refer": 1
+                     *   }
+                     * ]
+                     * qr[(.)\1]
+                     * matches aa for input aa
+                     * no match for input ab
+                     * @en
+                     * Backrefence of captured result.  
+                     * @ja
+                     * 保存した結果を後方参照します。
+                     */
                     pattern: /^(?:back)?refer(?:ence)?$/i,
                     action: function(json, captureObject) {
                         if(typeof json === "number") {
@@ -2730,6 +3034,25 @@
                     }
                 },
                 {
+                    /**
+                     * @notation raw
+                     * @alias regex regexp
+                     * ```format
+                     * {
+                     *   "raw": <raw regex>
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "raw": "a+b"
+                     * }
+                     * ```
+                     * qr[a+b]
+                     * @en
+                     * buries raw regular expression.
+                     * @ja
+                     * 生の正規表現を埋め込みます。
+                     */
                     pattern: /^(?:raw|regexp?)$/i,
                     action: function(json, captureObject) {
     	                var matcher;
@@ -2748,18 +3071,88 @@
                     }
                 },
                 {
+                    /**
+                     * @notation charset
+                     * @alias characterSet
+                     * ```format
+                     * {
+                     *   "charset": <name of character set>
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "charset": "all"
+                     * }
+                     * ```
+                     * qr[[\s\S]]
+                     * @en
+                     * matches a character in the given character set.
+                     * @ja
+                     * 与えられた文字セット内の文字にマッチします。
+                     */
                     pattern: /^char(?:acter)?Set$/i,
                     action: function(json, captureObject) {
                         return "[" + characterSetNotation(json) + "]";
                     }
                 },
                 {
+                    /**
+                     * @notation complementCharset
+                     * @alias complementSet complementaryCharset complementarySet complementCharacterSet complementaryCharacterSet
+                     * ```format
+                     * {
+                     *   "complementCharset": <name of character set>
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "complementCharset": "digit"
+                     * }
+                     * ```
+                     * qr[[^\d]]
+                     * @en
+                     * matches a character not in the given character set.
+                     * @ja
+                     * 与えられた文字セットにない文字にマッチします。
+                     */
                     pattern: /^complement(?:ary)?(?:char(?:acter)?)?Set$/i,
                     action: function(json, captureObject) {
                         return "[^" + characterSetNotation(json) + "]";
                     }
                 },
                 {
+                    /**
+                     * @notation anchor
+                     * @alias bound
+                     * ```format
+                     * {
+                     *   "anchor": <name of anchor>
+                     * }
+                     * ```
+                     * ```rei
+                     * [
+                     *   {
+                     *     "anchor": "beginOfLine"
+                     *   },
+                     *   "abc"
+                     * ]
+                     * ```
+                     * qr[^abc]
+                     * matches abc for input abc
+                     * no match for input dabc
+                     * @en
+                     * matches boundaries. Name of anchor can be shown as follows.
+                     * |begin, start, beginOfLine startOfLine|matches beginning of line or input|
+                     * |end, endOfLine|matches end of line or input|
+                     * |word, wordBound, wordBoundary|matches word boundary|
+                     * |nonWord, nonWordBound, nonWordBoundary, notWord, notWordBound, notWordBoundary|matches non-word boundary|
+                     * @ja
+                     * 境界にマッチします。以下のものが名称として使用できます。
+                     * |begin, start, beginOfLine startOfLine|行または入力の最初にマッチする|
+                     * |end, endOfLine|行または入力の最後にマッチする|
+                     * |word, wordBound, wordBoundary|単語の境界にマッチする|
+                     * |nonWord, nonWordBound, nonWordBoundary, notWord, notWordBound, notWordBoundary|非単語の境界にマッチする|
+                     */
                     pattern: /^(?:anchor|bound)$/i,
                     action: function(json, captureObject) {
                         if(typeof json !== "string") {
@@ -2776,6 +3169,25 @@
                     }
                 },
                 {
+                    /**
+                     * @notation charCode
+                     * @alias characterCode
+                     * ```format
+                     * {
+                     *   "charCode": <character code>
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "charCode": 41
+                     * }
+                     * ```
+                     * qr[\u0041]
+                     * @en
+                     * matches a character which has the given code by UTF-16.
+                     * @ja
+                     * UTF-16文字コードで与えられた文字にマッチします。
+                     */
                     pattern: /^char(?:acter)?Code$/i,
                     action: function(json, captureObject) {
                         var code;
@@ -2791,30 +3203,134 @@
                     }
                 },
                 {
+                    /**
+                     * @notation lookahead
+                     * @alias positiveLookahead lookaheadAssertion positiveLookaheadAssertion
+                     * ```format
+                     * {
+                     *   "lookahead": <pattern>
+                     * }
+                     * ```
+                     * ```rei
+                     * [
+                     *   "765",
+                     *   {
+                     *     "lookahead": "pro"
+                     *   }
+                     * ]
+                     * ```
+                     * qr[765(?=pro)]
+                     * matches 765 for input 765pro
+                     * no match for input 765
+                     * @en
+                     * matches the given pattern but input will not consume.
+                     * @ja
+                     * 与えられたパターンにマッチしますが、入力は消費しません。
+                     */
                     pattern: /^(?:positive)?Lookahead(?:Assertion)?$/i,
                     action: function(json, captureObject) {
                         return "(?=" + build(json, captureObject) + ")";
                     }
                 },
                 {
+                    /**
+                     * @notation negativeLookahead
+                     * @alias negativeLookaheadAssertion
+                     * ```format
+                     * {
+                     *   "negativeLookahead": <pattern>
+                     * }
+                     * ```
+                     * ```rei
+                     * [
+                     *   "765",
+                     *   {
+                     *     "negativeLookahead": "?"
+                     *   }
+                     * ]
+                     * ```
+                     * qr[765(?!\?)]
+                     * matches 765 for input 765!
+                     * no match for input 765?
+                     * @en
+                     * matches if the given pattern is not matched but input will not consume.
+                     * @ja
+                     * 与えられたパターンにマッチしないときマッチしますが、入力は消費しません。
+                     */
                     pattern: /^negativeLookahead(?:Assertion)?$/i,
                     action: function(json, captureObject) {
                         return "(?!" + build(json, captureObject) + ")";
                     }
                 },
                 {
+                    /**
+                     * @notation unicode
+                     * @alias unicodeProperty
+                     * ```format
+                     * {
+                     *   "unicode": <unicode property>
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "unicode": "L"
+                     * }
+                     * ```
+                     * qr[\p{L}]
+                     * @en
+                     * matches a character which is in the given Unicode property.
+                     * @ja
+                     * 与えられたUnicodeプロパティにある文字にマッチします。
+                     */
                     pattern: /^(?:unicode(?:Property)?)$/i,
                     action: function(json) {
                         return "[" + unicodeCategories(json) + "]";
                     }
                 },
                 {
+                    /**
+                     * @notation complementUnicode
+                     * @alias complementaryUnicode complementUnicodeProperty complementaryUnicodeProperty
+                     * ```format
+                     * {
+                     *   "complementUnicode": <unicode property>
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "complementUnicode": "L"
+                     * }
+                     * ```
+                     * qr[\P{L}]
+                     * @en
+                     * matches a character which is not in the given Unicode property.
+                     * @ja
+                     * 与えられたUnicodeプロパティにない文字にマッチします。
+                     */
                     pattern: /^(?:complement(?:ary)?Unicode(?:Property)?)$/i,
                     action: function(json) {
                         return "[^" + unicodeCategories(json) + "]";
                     }
                 },
                 {
+                    /**
+                     * @notation sequence
+                     * @alias seq
+                     * ```format
+                     * {
+                     *   "sequence": <name of sequence>
+                     * }
+                     * ```
+                     * ```rei
+                     * {
+                     *   "sequence": "real"
+                     * }
+                     * ```
+                     * @en
+                     * matches the predefined pattern.
+                     * @ja
+                     * 与えられた名称の定義済みパターンにマッチします。
+                     */
                     pattern: /^(?:seq(?:uence)?)$/i,
                     action: function(json) {
                         var i;
