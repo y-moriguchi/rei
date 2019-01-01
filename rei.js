@@ -3340,16 +3340,22 @@
                      * no match for input dabc
                      * @en
                      * matches boundaries. Name of anchor can be shown as follows.
-                     * |begin, start, beginOfLine startOfLine|matches beginning of line or input|
-                     * |end, endOfLine|matches end of line or input|
-                     * |word, wordBound, wordBoundary|matches word boundary|
-                     * |nonWord, nonWordBound, nonWordBoundary, notWord, notWordBound, notWordBoundary|matches non-word boundary|
+                     * [options=\"header\"]
+                     * |====
+                     * |begin, start, beginOfLine startOfLine|matches beginning of line or input
+                     * |end, endOfLine|matches end of line or input
+                     * |word, wordBound, wordBoundary|matches word boundary
+                     * |nonWord, nonWordBound, nonWordBoundary, notWord, notWordBound, notWordBoundary|matches non-word boundary
+                     * |====
                      * @ja
                      * 境界にマッチします。以下のものが名称として使用できます。
-                     * |begin, start, beginOfLine startOfLine|行または入力の最初にマッチする|
-                     * |end, endOfLine|行または入力の最後にマッチする|
-                     * |word, wordBound, wordBoundary|単語の境界にマッチする|
-                     * |nonWord, nonWordBound, nonWordBoundary, notWord, notWordBound, notWordBoundary|非単語の境界にマッチする|
+                     * [options=\"header\"]
+                     * |====
+                     * |begin, start, beginOfLine startOfLine|行または入力の最初にマッチする
+                     * |end, endOfLine|行または入力の最後にマッチする
+                     * |word, wordBound, wordBoundary|単語の境界にマッチする
+                     * |nonWord, nonWordBound, nonWordBoundary, notWord, notWordBound, notWordBoundary|非単語の境界にマッチする
+                     * |====
                      */
                     pattern: /^(?:anchor|bound)$/i,
                     action: function(json, captureObject) {
@@ -3670,6 +3676,22 @@
             regex = convert(regexOrJson);
             /**
              * @class Rei
+             * ```code
+             * var result = Re.i([
+             *   {
+             *     "capture": {
+             *        "name": "a",
+             *        "pattern": {
+             *          "oneOrMoreNonGreedy": {
+             *            "charset": "all"
+             *          }
+             *        }
+             *     }
+             *   },
+             *   ";"
+             * ]).execWithName("abc;");
+             * console.log(result.a);  // output "abc"
+             * ```
              * @en
              * @param aString string to match
              * @return matched and captured result
@@ -3686,6 +3708,21 @@
             };
             /**
              * @class Rei
+             * ```code
+             * var matcher = Re.i([
+             *   {
+             *     "capture": {
+             *        "name": "a",
+             *        "pattern": {
+             *          "oneOrMoreNonGreedy": {
+             *            "charset": "all"
+             *          }
+             *        }
+             *     }
+             *   },
+             *   ";"
+             * ]).matcher("abc;");
+             * ```
              * @en
              * @param aString string to match
              * @return a created matcher
@@ -3702,6 +3739,26 @@
                 me = {
                     /**
                      * @class Rei.matcher
+                     * ```code
+                     * var json = [
+                     *   {
+                     *     "capture": {
+                     *        "name": "a",
+                     *        "pattern": {
+                     *          "oneOrMoreNonGreedy": {
+                     *            "charset": "all"
+                     *          }
+                     *        }
+                     *     }
+                     *   },
+                     *   ";"
+                     * ];
+                    * var matcher = Re.i(json).matches("@@@@@abc;@@@@@def;");
+                     * var result = matcher.find();
+                     * console.log(result.a);  // output abc
+                     * result = matcher.find();
+                     * console.log(result.a);  // output def
+                     * ```
                      * @en
                      * @return matched result
                      * finds the next sequence of the pattern.  
@@ -3721,6 +3778,26 @@
                     },
                     /**
                      * @class Rei.matcher
+                     * ```code
+                     * var json = [
+                     *   {
+                     *     "capture": {
+                     *        "name": "a",
+                     *        "pattern": {
+                     *          "oneOrMoreNonGreedy": {
+                     *            "charset": "all"
+                     *          }
+                     *        }
+                     *     }
+                     *   },
+                     *   ";"
+                     * ];
+                     * var matcher = Re.i(json).matches("abc;@@@@@def;");
+                     * var result = matcher.lookingAt();
+                     * console.log(result.a);  // output abc
+                     * result = matcher.lookingAt();
+                     * console.log(result);  // output null
+                     * ```
                      * @en
                      * @return matched result
                      * matches the next sequence of the pattern from the index of last match.  
@@ -3745,6 +3822,27 @@
                     },
                     /**
                      * @class Rei.matcher
+                     * ```code
+                     * var json = [
+                     *   {
+                     *     "capture": {
+                     *        "name": "a",
+                     *        "pattern": {
+                     *          "oneOrMoreNonGreedy": {
+                     *            "charset": "all"
+                     *          }
+                     *        }
+                     *     }
+                     *   },
+                     *   ";"
+                     * ];
+                     * var matcher = Re.i(json).matches("abc;");
+                     * var result = matcher.lookingAt();
+                     * console.log(result.a);  // output abc
+                     * matcher = Re.i(json).matches("@@@@abc;");
+                     * result = matcher.matches();
+                     * console.log(result);  // output null
+                     * ```
                      * @en
                      * @return matched result
                      * matches the next sequence of the pattern from the index of last match to the end of sequence.  
@@ -3769,6 +3867,37 @@
                     },
                     /**
                      * @class Rei.matcher
+                     * ```code
+                     * var json1 = [
+                     *   {
+                     *     "capture": {
+                     *        "name": "a",
+                     *        "pattern": {
+                     *          "oneOrMoreNonGreedy": {
+                     *            "charset": "all"
+                     *          }
+                     *        }
+                     *     }
+                     *   },
+                     *   ";"
+                     * ];
+                     * var json2 = {
+                     *   "capture": {
+                     *      "name": "a",
+                     *      "pattern": {
+                     *        "oneOrMoreNonGreedy": {
+                     *          "charset": "digit"
+                     *        }
+                     *      }
+                     *   }
+                     * };
+                     * var matcher = Re.i(json1).matches("@@@@@abc@@@@@a01a;");
+                     * var result = matcher.find();
+                     * console.log(result.a);  // output abc
+                     * matcher.usePattern(json2);
+                     * result = matcher.matches();
+                     * console.log(result);  // output 01
+                     * ```
                      * @en
                      * @param regexOrJson regular expression or Morilib Rei formed JavaScript object
                      * @return this instance
