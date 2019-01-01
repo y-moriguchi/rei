@@ -3753,7 +3753,7 @@
                      *   },
                      *   ";"
                      * ];
-                    * var matcher = Re.i(json).matches("@@@@@abc;@@@@@def;");
+                     * var matcher = Re.i(json).matches("@@@@@abc;@@@@@def;");
                      * var result = matcher.find();
                      * console.log(result.a);  // output abc
                      * result = matcher.find();
