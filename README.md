@@ -13,6 +13,15 @@ Morilib Rei has features shown as follows.
 <script src="rei.js"></script>
 ```
 
+### node.js
+```shell
+$ npm install morilib-rei
+```
+
+```js
+var Re = require("morilib-rei");
+```
+
 ## Examples
 
 ### Matching URLs of morilib.net
