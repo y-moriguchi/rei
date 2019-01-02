@@ -1,7 +1,7 @@
 /**
  * Morilib Rei
  *
- * Copyright (c) 2018 Yuichiro MORIGUCHI
+ * Copyright (c) 2019 Yuichiro MORIGUCHI
  *
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
