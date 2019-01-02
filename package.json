@@ -1,0 +1,22 @@
+{
+  "name": "morilib-rei",
+  "version": "0.0.0",
+  "description": "Regular expression library for JavaScript",
+  "main": "rei.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/y-moriguchi/rei.git"
+  },
+  "keywords": [
+    "Regex"
+  ],
+  "author": "Yuichiro MORIGUCHI",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/y-moriguchi/rei/issues"
+  },
+  "homepage": "https://github.com/y-moriguchi/rei#readme"
+}
