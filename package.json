@@ -1,6 +1,6 @@
 {
   "name": "morilib-rei",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Regular expression library for JavaScript",
   "main": "rei.js",
   "scripts": {
@@ -12,6 +12,12 @@
   },
   "keywords": [
     "Regex"
+  ],
+  "files": [
+    "LICENSE.txt",
+    "README.md",
+    "package.json",
+    "rei.js"
   ],
   "author": "Yuichiro MORIGUCHI",
   "license": "MIT",

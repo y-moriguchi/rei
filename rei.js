@@ -9,15 +9,19 @@
 (function(root) {
     var undef = void 0,
         Re;
+
     function isArray(anObject) {
         return Object.prototype.toString.call(anObject) === '[object Array]';
     }
+
     function isObject(anObject) {
         return typeof anObject === "object" && anObject !== null;
     }
+
     function isCharacter(anObject) {
         return typeof anObject === "string" && anObject.length === 1;
     }
+
     function getOneAndOnlyField(obj) {
         var res = undef;
         for(i in obj) {
@@ -34,11 +38,13 @@
         }
         return res;
     }
+
     function createModule(options) {
         var characterSetNotation,
             regexNotation,
             unicodeCategories,
             opts = options ? options : {};
+
         function negateCharacterSet(charSet) {
             var property = new RegExp("[" + charSet + "]"),
                 beginCode = -1,
@@ -46,10 +52,12 @@
                 aCharacter,
                 resultSet = "",
                 i;
+
             function toEscapeSequence(code) {
                 var codeString = "0000" + code.toString(16);
                 return "\\u" + codeString.substring(codeString.length - 4, codeString.length);
             }
+
             for(i = 0; i <= 0xFFFF; i++) {
                 aCharacter = String.fromCharCode(i);
                 if(!property.test(aCharacter)) {
@@ -69,9 +77,11 @@
             }
             return resultSet;
         }
+
         function escapeCharacterSetFunnyCharacter(aString) {
             return aString.replace(/([\/\.\\\[\]\|\^\$\(\)\*\+\?\{\}\-])/g, "\\$1");
         }
+
         function createUnicodeCategories(userProperties) {
             var categories;
             categories = [
@@ -2450,11 +2460,14 @@
                         "\\uA000-\\uA48C\\uA490-\\uA4C6"
                 }
             ];
+
             if(opts.userProperties) {
                 categories = categories.concat(opts.userProperties);
             }
+
             function scanCategories(name) {
                 var i;
+
                 for(i = 0; i < categories.length; i++) {
                     if(categories[i].pattern.test(name)) {
                         return categories[i].charset;
@@ -2462,6 +2475,7 @@
                 }
                 throw new Error("invalid character set name: " + name);
             }
+
             function build(nameOrNames) {
                 var i,
                     result = "";
@@ -2478,10 +2492,12 @@
             }
             return build;
         }
+
         unicodeCategories = createUnicodeCategories(opts.userProperties);
         function createCharacterSetNotation(userSet) {
             var notation,
                 definedSet;
+
             notation = [
                 {
                     /**
@@ -2519,6 +2535,7 @@
                         return escapeCharacterSetFunnyCharacter(beginChar) + "-" + escapeCharacterSetFunnyCharacter(endChar);
                     }
                 },
+
                 {
                     /**
                      * @setnotation unicode
@@ -2543,6 +2560,7 @@
                         return unicodeCategories(json);
                     }
                 },
+
                 {
                     /**
                      * @setnotation complementUnicode
@@ -2568,6 +2586,7 @@
                     }
                 }
             ];
+
             definedSet = [
                 {
                     /**
@@ -2580,6 +2599,7 @@
                     pattern: /^all$/i,
                     charset: "\\S\\s"
                 },
+
                 {
                     /**
                      * @definedset digit
@@ -2591,6 +2611,7 @@
                     pattern: /^digit$/i,
                     charset: "\\d"
                 },
+
                 {
                     /**
                      * @definedset nonDigit
@@ -2603,6 +2624,7 @@
                     pattern: /^no[nt]Digit$/i,
                     charset: "\\D"
                 },
+
                 {
                     /**
                      * @definedset word
@@ -2614,6 +2636,7 @@
                     pattern: /^word$/i,
                     charset: "\\w"
                 },
+
                 {
                     /**
                      * @definedset nonWord
@@ -2626,6 +2649,7 @@
                     pattern: /^no[nt]Word$/i,
                     charset: "\\W"
                 },
+
                 {
                     /**
                      * @definedset space
@@ -2638,6 +2662,7 @@
                     pattern: /^(?:white)?space$/i,
                     charset: "\\s"
                 },
+
                 {
                     /**
                      * @definedset nonSpace
@@ -2650,6 +2675,7 @@
                     pattern: /^no[nt](?:white)?space$/i,
                     charset: "\\S"
                 },
+
                 {
                     /**
                      * @definedset tab
@@ -2661,6 +2687,7 @@
                     pattern: /^tab$/i,
                     charset: "\\t"
                 },
+
                 {
                     /**
                      * @definedset carriageReturn
@@ -2673,6 +2700,7 @@
                     pattern: /^(?:cr|carriageReturn)$/i,
                     charset: "\\r"
                 },
+
                 {
                     /**
                      * @definedset lineFeed
@@ -2685,6 +2713,7 @@
                     pattern: /^(?:lf|lineFeed)$/i,
                     charset: "\\n"
                 },
+
                 {
                     /**
                      * @definedset verticalTab
@@ -2697,6 +2726,7 @@
                     pattern: /^(?:vt|verticalTab)$/i,
                     charset: "\\v"
                 },
+
                 {
                     /**
                      * @definedset formFeed
@@ -2709,6 +2739,7 @@
                     pattern: /^(?:ff|formFeed)$/i,
                     charset: "\\f"
                 },
+
                 {
                     /**
                      * @definedset backspace
@@ -2722,12 +2753,15 @@
                     charset: "\\b"
                 }
             ];
+
             if(opts.userSet) {
                 definedSet = definedSet.concat(opts.userSet);
             }
+
             function scanNotation(json) {
                 var element = getOneAndOnlyField(json),
                     i;
+
                 for(i = 0; i < notation.length; i++) {
                     if(notation[i].pattern.test(element)) {
                         return notation[i].action(json[element]);
@@ -2735,8 +2769,10 @@
                 }
                 throw new Error("invalid character set element: " + element);
             }
+
             function scanDefinedSet(name) {
                 var i;
+
                 for(i = 0; i < definedSet.length; i++) {
                     if(definedSet[i].pattern.test(name)) {
                         return definedSet[i].charset;
@@ -2744,8 +2780,10 @@
                 }
                 throw new Error("invalid character set name: " + name);
             }
+
             function build(json) {
                 var i, result;
+
                 if(isCharacter(json)) {
                     return escapeCharacterSetFunnyCharacter(json);
                 } else if(typeof json === "string") {
@@ -2764,14 +2802,17 @@
             }
             return build;
         }
+
         characterSetNotation = createCharacterSetNotation(opts.userSet);
         function escapeFunnyCharacter(aString) {
             return aString.replace(/([\/\.\\\[\]\|\^\$\(\)\*\+\?\{\}])/g, "\\$1");
         }
+
         function createRegexNotation() {
             var notation,
                 sequence,
                 i;
+
             function generateFromTo(suffix) {
                 return function(json, captureObject) {
                     var fromTimes, toTimes;
@@ -2780,6 +2821,7 @@
                     return "(?:" + build(json["pattern"], captureObject) + "){" + fromTimes + "," + toTimes + "}" + suffix;
                 };
             }
+
             sequence = [
                 {
                     /**
@@ -2792,6 +2834,7 @@
                     pattern: /^(?:all)$/i,
                     regex: "[\\s\\S]"
                 },
+
                 {
                     /**
                      * @sequence exceptNewline
@@ -2804,6 +2847,7 @@
                     pattern: /^(?:(?:all)?ExceptNewline)$/i,
                     regex: "."
                 },
+
                 {
                     /**
                      * @sequence newline
@@ -2816,6 +2860,7 @@
                     pattern: /^(?:br|nl|newline)$/i,
                     regex: "\\r\\n|\\r|\\n"
                 },
+
                 {
                     /**
                      * @sequence real
@@ -2828,6 +2873,7 @@
                     pattern: /^(?:(?:real|float)(?:Number)?(?:WithSign)?)$/i,
                     regex: "[\\+\\-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][\\+\\-]?[0-9]+)?"
                 },
+
                 {
                     /**
                      * @sequence realWithoutSign
@@ -2841,6 +2887,7 @@
                     regex: "(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][\\+\\-]?[0-9]+)?"
                 }
             ];
+
             if(opts.userSequence) {
                 sequence = sequence.concat(opts.userSequence);
             }
@@ -2872,6 +2919,7 @@
                         return "(?:" + build(json, captureObject) + ")*";
                     }
                 },
+
                 {
                     /**
                      * @notation oneOrMore
@@ -2899,6 +2947,7 @@
                         return "(?:" + build(json, captureObject) + ")+";
                     }
                 },
+
                 {
                     /**
                      * @notation maybe
@@ -2926,6 +2975,7 @@
                         return "(?:" + build(json, captureObject) + ")?";
                     }
                 },
+
                 {
                     /**
                      * @notation repeat
@@ -2962,6 +3012,7 @@
                     pattern: /^repeat$/i,
                     action: generateFromTo("")
                 },
+
                 {
                     /**
                      * @notation zeroOrMoreNonGreedy
@@ -2997,6 +3048,7 @@
                         return "(?:" + build(json, captureObject) + ")*?";
                     }
                 },
+
                 {
                     /**
                      * @notation oneOrMoreNonGreedy
@@ -3032,6 +3084,7 @@
                         return "(?:" + build(json, captureObject) + ")+?";
                     }
                 },
+
                 {
                     /**
                      * @notation maybeNonGreedy
@@ -3067,6 +3120,7 @@
                         return "(?:" + build(json, captureObject) + ")??";
                     }
                 },
+
                 {
                     /**
                      * @notation repeatNonGreedy
@@ -3112,6 +3166,7 @@
                     pattern: /^repeatNo[nt]Greedy$/i,
                     action: generateFromTo("?")
                 },
+
                 {
                     /**
                      * @notation or
@@ -3136,6 +3191,7 @@
                     pattern: /^(?:or|alter(?:nate|nation|native)?)$/i,
                     action: function(json, captureObject) {
                         var i, result = "";
+
                         for(i = 0; i < json.length; i++) {
                             if(i > 0) {
                                 result += "|";
@@ -3145,6 +3201,7 @@
                         return result;
                     }
                 },
+
                 {
                     /**
                      * @notation capture
@@ -3192,6 +3249,7 @@
                         }
                     }
                 },
+
                 {
                     /**
                      * @notation refer
@@ -3231,6 +3289,7 @@
                         }
                     }
                 },
+
                 {
                     /**
                      * @notation raw
@@ -3253,21 +3312,23 @@
                      */
                     pattern: /^(?:raw|regexp?)$/i,
                     action: function(json, captureObject) {
-    	                var matcher;
-    	                if(typeof json !== "string") {
-    	                    throw new Error("raw regex must be string");
-    	                }
-    	                matcher = expandRegExp(/$/g).matcher(json);
-    	                while(!matcher.usePattern(/$/g).lookingAt()) {
-    		                if(matcher.usePattern(/\((?!\?[:=!])/g).lookingAt()) {
-    			                captureObject.captures++;
-    		                } else if(matcher.usePattern(/\[(?:[^\]\\]|\\[\s\S])*\]/g).lookingAt()) {
-    		                } else if(matcher.usePattern(/\\[\s\S]|[\s\S]/g).lookingAt()) {
-    		                }
-    	                }
-    	                return json;
+                        var matcher;
+
+                        if(typeof json !== "string") {
+                            throw new Error("raw regex must be string");
+                        }
+                        matcher = expandRegExp(/$/g).matcher(json);
+                        while(!matcher.usePattern(/$/g).lookingAt()) {
+                            if(matcher.usePattern(/\((?!\?[:=!])/g).lookingAt()) {
+                                captureObject.captures++;
+                            } else if(matcher.usePattern(/\[(?:[^\]\\]|\\[\s\S])*\]/g).lookingAt()) {
+                            } else if(matcher.usePattern(/\\[\s\S]|[\s\S]/g).lookingAt()) {
+                            }
+                        }
+                        return json;
                     }
                 },
+
                 {
                     /**
                      * @notation charset
@@ -3293,6 +3354,7 @@
                         return "[" + characterSetNotation(json) + "]";
                     }
                 },
+
                 {
                     /**
                      * @notation complementCharset
@@ -3318,6 +3380,7 @@
                         return "[^" + characterSetNotation(json) + "]";
                     }
                 },
+
                 {
                     /**
                      * @notation anchor
@@ -3372,6 +3435,7 @@
                         }
                     }
                 },
+
                 {
                     /**
                      * @notation charCode
@@ -3395,6 +3459,7 @@
                     pattern: /^char(?:acter)?Code$/i,
                     action: function(json, captureObject) {
                         var code;
+
                         if(!(typeof json === "number" && json >= 0 && json <= 0xfffff)) {
                             throw new Error("invalid character code: json");
                         } else if(json < 65536) {
@@ -3406,6 +3471,7 @@
                         }
                     }
                 },
+
                 {
                     /**
                      * @notation lookahead
@@ -3436,6 +3502,7 @@
                         return "(?=" + build(json, captureObject) + ")";
                     }
                 },
+
                 {
                     /**
                      * @notation negativeLookahead
@@ -3466,6 +3533,7 @@
                         return "(?!" + build(json, captureObject) + ")";
                     }
                 },
+
                 {
                     /**
                      * @notation unicode
@@ -3491,6 +3559,7 @@
                         return "[" + unicodeCategories(json) + "]";
                     }
                 },
+
                 {
                     /**
                      * @notation complementUnicode
@@ -3516,6 +3585,7 @@
                         return "[^" + unicodeCategories(json) + "]";
                     }
                 },
+
                 {
                     /**
                      * @notation sequence
@@ -3538,6 +3608,7 @@
                     pattern: /^(?:seq(?:uence)?)$/i,
                     action: function(json) {
                         var i;
+
                         if(typeof json !== "string") {
                             throw new Error("Invalid sequence: " + json);
                         }
@@ -3550,6 +3621,7 @@
                     }
                 }
             ];
+
             if(opts.userNotation) {
                 for(i = 0; i < opts.userNotation.length; i++) {
                     notation.push({
@@ -3557,9 +3629,11 @@
                         action: (function(i) {
                             return function(json, captureObject) {
                                 var bound;
+
                                 function wrappedBuild(anObject) {
                                     return build(anObject, captureObject);
                                 }
+
                                 bound = {
                                     build: wrappedBuild
                                 };
@@ -3569,9 +3643,11 @@
                     });
                 }
             }
+
             function scanNotation(json, captureObject) {
                 var element = getOneAndOnlyField(json),
                     i;
+
                 for(i = 0; i < notation.length; i++) {
                     if(notation[i].pattern.test(element)) {
                         return notation[i].action(json[element], captureObject);
@@ -3579,8 +3655,12 @@
                 }
                 throw new Error("invalid element: " + element);
             }
+
             function build(json, captureObject) {
-                var i, result;
+                var i,
+                    result,
+                    reString;
+
                 if(typeof json === "string") {
                     return escapeFunnyCharacter(json);
                 } else if(isArray(json)) {
@@ -3589,6 +3669,11 @@
                         result += build(json[i], captureObject);
                     }
                     return result;
+                } else if(json instanceof RegExp) {
+                    reString = json.toString();
+                    reString = reString.replace(/^\//, "");
+                    reString = reString.replace(/\/[a-zA-Z]*$/, "");
+                    return build({ raw: reString }, captureObject);
                 } else if(isObject(json)) {
                     return scanNotation(json, captureObject);
                 } else {
@@ -3597,6 +3682,7 @@
             }
             return build;
         }
+
         regexNotation = createRegexNotation(opts.userNotation);
         function buildFlag(flag) {
             if(typeof flag !== "string") {
@@ -3615,9 +3701,11 @@
                 throw new Error("invalid flag: " + flag);
             }
         }
+
         function buildFlags(flags) {
             var i,
                 result = "";
+
             if(!flags) {
                 return "";
             } else if(isArray(flags)) {
@@ -3628,9 +3716,11 @@
                 return buildFlag(flags);
             }
         }
+
         function buildRegex(json, flags) {
             var captureObject,
                 builtRegex;
+
             captureObject = {
                 captures: 1,
                 names: {},
@@ -3642,8 +3732,10 @@
                 capture: captureObject
             };
         }
+
         function expandRegExp(regexOrJson, flags) {
             var regex;
+
             function convert(regexOrJson) {
                 if(regexOrJson instanceof RegExp) {
                     return {
@@ -3657,8 +3749,10 @@
                     return buildRegex(regexOrJson, flags);
                 }
             }
+
             function copyToGroup(me, pattern, execResult) {
                 var i;
+
                 if(execResult) {
                     me.group = {};
                     for(i = 0; i < execResult.length; i++) {
@@ -3673,6 +3767,7 @@
                 }
                 return execResult;
             }
+
             regex = convert(regexOrJson);
             /**
              * @class Rei
@@ -3703,9 +3798,11 @@
              */
             regex.regex.execWithName = function(aString) {
                 var groupResult = {};
+
                 copyToGroup(groupResult, regex, regex.regex.exec(aString));
                 return groupResult.group;
             };
+
             /**
              * @class Rei
              * ```code
@@ -3736,6 +3833,7 @@
                 var pattern = regex,
                     opt = option ? option : {},
                     me;
+
                 me = {
                     /**
                      * @class Rei.matcher
@@ -3771,11 +3869,13 @@
                     find: function() {
                         var previousIndex = pattern.regex.lastIndex,
                             result = pattern.regex.exec(aString);
+
                         if(!result) {
                             pattern.regex.lastIndex = previousIndex;
                         }
                         return copyToGroup(me, pattern, result);
                     },
+
                     /**
                      * @class Rei.matcher
                      * ```code
@@ -3812,6 +3912,7 @@
                     lookingAt: function() {
                         var previousIndex = pattern.regex.lastIndex,
                             result = me.find();
+
                         if(result && result.index === previousIndex) {
                             return copyToGroup(me, pattern, result);
                         } else {
@@ -3820,6 +3921,7 @@
                             return null;
                         }
                     },
+
                     /**
                      * @class Rei.matcher
                      * ```code
@@ -3865,6 +3967,7 @@
                             return null;
                         }
                     },
+
                     /**
                      * @class Rei.matcher
                      * ```code
@@ -3911,6 +4014,7 @@
                      */
                     usePattern: function(regexOrJson) {
                         var previousIndex = pattern.regex.lastIndex;
+
                         pattern = convert(regexOrJson);
                         if(!pattern.regex.global) {
                             throw new Error("global flag required");
@@ -3925,11 +4029,13 @@
         }
         return expandRegExp;
     }
+
     Re = {
         i: createModule(),
         build: createModule(),
         plugin: createModule
     };
+
     if(typeof module !== "undefined" && module.exports) {
         module.exports = Re;
     } else {
